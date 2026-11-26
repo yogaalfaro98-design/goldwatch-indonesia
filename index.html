@@ -5,7 +5,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#142820">
-<title>GoldWatch Indonesia</title>
+<title>GoldWatch Indonesia - Harga Emas Dunia</title>
+<meta name="description" content="Pantau harga emas dunia XAU/USD, hitung harga emas per gram, dan pelajari pasar emas bersama GoldWatch Indonesia.">
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:#f4f5f1;color:#202820;font-family:Arial,sans-serif}
@@ -19,72 +20,152 @@ h1{font-size:27px}
 .muted{color:#788178;font-size:13px;line-height:1.7}
 .card{background:white;padding:20px;border-radius:14px;margin:15px 0;box-shadow:0 3px 12px #0000000c}
 .price{font-size:25px;color:#b18b36;font-weight:bold}
-.tag{background:#fff2d4;color:#85631c;padding:8px;border-radius:20px;font-size:12px}
+.tag{display:inline-block;background:#fff2d4;color:#85631c;padding:8px;border-radius:20px;font-size:12px}
 input{width:100%;padding:13px;margin:8px 0;border:1px solid #ddd;border-radius:8px}
-button{background:#b18b36;color:white;padding:13px;border:0;border-radius:8px;font-weight:bold}
+button{background:#b18b36;color:white;padding:13px;border:0;border-radius:8px;font-weight:bold;cursor:pointer}
 footer{background:#142820;color:white;padding:25px;font-size:12px;line-height:1.8}
+footer a,.source a{color:#b18b36}
 </style>
 </head>
 <body>
+
 <header>
 <div class="logo">✦ GOLDWATCH</div>
 <p>INDONESIA · GOLD PRICE MONITORING</p>
 </header>
+
 <nav>
 <a href="#home">Beranda</a>
 <a href="#harga">Harga Emas</a>
 <a href="#konversi">Konversi</a>
 <a href="#edukasi">Edukasi</a>
 </nav>
+
 <main id="home">
 <p class="muted">SELAMAT DATANG DI GOLDWATCH INDONESIA</p>
 <h1>Pantau Harga Emas, Pahami Pergerakannya.</h1>
 <p class="muted">Informasi harga emas dunia dan edukasi pasar emas untuk masyarakat Indonesia.</p>
+
 <section class="card" id="harga">
 <p class="muted">HARGA EMAS DUNIA · XAU/USD</p>
-<div class="price">Data belum tersedia</div>
-<span class="tag">Menunggu koneksi data aktual</span>
-<p class="muted">Harga emas dunia akan ditampilkan setelah sumber data berlisensi dihubungkan.</p>
+<div class="price" id="hargaEmas">Memuat harga emas...</div>
+<span class="tag" id="statusHarga">Menghubungkan ke sumber data</span>
+<p class="muted" id="waktuHarga">Menunggu data harga emas.</p>
+<p class="muted source">
+Sumber data:
+<a href="https://goldprice.dev/" target="_blank" rel="noopener">Goldprice.dev</a>
+</p>
+<button onclick="ambilHarga()">Perbarui harga</button>
 </section>
+
 <section class="card" id="konversi">
 <h2>Kalkulator Harga Emas</h2>
-<p class="muted">Masukkan harga emas per troy ounce dan kurs USD/IDR.</p>
-<label>Harga emas USD</label>
-<input id="gold" type="number" placeholder="Contoh: 4000">
+<p class="muted">Harga per gram dihitung dari harga XAU/USD dan kurs USD/IDR yang kamu masukkan.</p>
+
+<label>Harga emas USD per troy ounce</label>
+<input id="gold" type="number" placeholder="Menunggu harga otomatis..." step="any">
+
 <label>Kurs USD ke Rupiah</label>
-<input id="kurs" type="number" placeholder="Contoh: 16000">
+<input id="kurs" type="number" placeholder="Contoh: 16000" step="any">
+
 <button onclick="hitung()">Hitung harga per gram</button>
 <p id="hasil" class="price">Hasil akan muncul di sini</p>
+<p class="muted">Perhitungan menggunakan 1 troy ounce = 31,1034768 gram.</p>
 </section>
+
 <section class="card" id="edukasi">
 <h2>Mengenal XAU/USD</h2>
 <p class="muted">XAU/USD adalah nilai satu troy ounce emas dalam dolar Amerika Serikat.</p>
+
 <h3>Apa yang memengaruhi harga emas?</h3>
 <p class="muted">Nilai dolar AS, suku bunga, inflasi, permintaan pasar, dan kondisi ekonomi dunia.</p>
+
 <h3>Apakah harga emas selalu naik?</h3>
 <p class="muted">Tidak. Harga emas bisa naik maupun turun. Tidak ada keuntungan yang dijamin.</p>
 </section>
+
 <section class="card">
 <h2>Tentang GoldWatch</h2>
 <p class="muted">GoldWatch Indonesia adalah platform informasi dan edukasi pemantauan harga emas dunia untuk masyarakat Indonesia.</p>
 </section>
 </main>
+
 <footer>
 <strong>GOLDWATCH INDONESIA</strong><br>
 Pantau Harga Emas, Pahami Pergerakannya.<br><br>
-Informasi ini bukan rekomendasi investasi. Harga harus diverifikasi sebelum transaksi.<br>
+Informasi ini bukan rekomendasi investasi. Harga dapat mengalami keterlambatan dan harus diverifikasi sebelum transaksi.<br>
 © 2026 GoldWatch Indonesia
 </footer>
+
 <script>
-function hitung(){
-let g=Number(document.getElementById('gold').value);
-let k=Number(document.getElementById('kurs').value);
-if(g<=0||k<=0){alert('Masukkan harga dan kurs yang benar');return;}
-let hasil=g*k/31.1034768;
-document.getElementById('hasil').innerText='Rp '+Math.round(hasil).toLocaleString('id-ID')+' / gram';
+async function ambilHarga(){
+  const hargaEl = document.getElementById("hargaEmas");
+  const statusEl = document.getElementById("statusHarga");
+  const waktuEl = document.getElementById("waktuHarga");
+
+  hargaEl.textContent = "Memuat harga emas...";
+  statusEl.textContent = "Mengambil data";
+
+  try {
+    const response = await fetch("/.netlify/functions/spot");
+
+    if (!response.ok) {
+      throw new Error("Gagal mengambil data");
+    }
+
+    const data = await response.json();
+
+    if (!data.price) {
+      throw new Error("Harga tidak tersedia");
+    }
+
+    const harga = Number(data.price);
+
+    hargaEl.textContent = "US$ " + harga.toLocaleString("en-US", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+
+    document.getElementById("gold").value = harga;
+
+    statusEl.textContent = data.is_stale
+      ? "Data mungkin sudah terlambat"
+      : "Data berhasil diperbarui";
+
+    const waktu = new Date(data.computed_at);
+
+    waktuEl.textContent = "Pembaruan: " +
+      waktu.toLocaleString("id-ID", {
+        dateStyle: "medium",
+        timeStyle: "short",
+        timeZone: "Asia/Jakarta"
+      }) + " WIB. Harga per troy ounce.";
+
+  } catch (error) {
+    hargaEl.textContent = "Harga belum tersedia";
+    statusEl.textContent = "Koneksi data bermasalah";
+    waktuEl.textContent = "Silakan coba perbarui kembali.";
+  }
 }
+
+function hitung(){
+  const g = Number(document.getElementById("gold").value);
+  const k = Number(document.getElementById("kurs").value);
+
+  if (!Number.isFinite(g) || !Number.isFinite(k) || g <= 0 || k <= 0) {
+    alert("Masukkan harga emas dan kurs USD/IDR yang benar.");
+    return;
+  }
+
+  const hasil = g * k / 31.1034768;
+
+  document.getElementById("hasil").textContent =
+    "Rp " + Math.round(hasil).toLocaleString("id-ID") + " / gram";
+}
+
+ambilHarga();
+setInterval(ambilHarga, 300000);
 </script>
+
 </body>
 </html>
-
-
